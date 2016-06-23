@@ -1,0 +1,52 @@
+\documentclass[12pt]{book}
+\usepackage{amssymb,amsmath,latexsym,amsthm, hyperref, amsfonts, array, multicol}
+
+\pagestyle{empty}
+
+\newcommand{\longpage}{\enlargethispage*{1in}}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+<<echo = FALSE>>=
+require(mosaic)
+require(babynames)
+@
+
+\begin{center}
+\Large{Writing Functions in R}
+\end{center}
+
+
+\noindent Instead of copying and pasting commands over and over, the command ``function" will allow us to define functions that take arguments and return outputs such as graphs.
+
+
+\noindent For example, instead of creating individual graphs for baby name trends over the years, we can define the function NameTrend to do this work for us. The format within an R chunk is 
+
+
+\hfill\begin{minipage}{\dimexpr\textwidth-3cm}
+ functionName <- function( arg1 = default1, arg2 = default2, ... ) \{Do stuff to the arguments here; the result of last line is returned, or we can use an explicit return() command.\}
+\end{minipage}
+
+
+<<>>=
+NameTrend <- function(names, gender) {
+  babynames %>% 
+  filter(name %in% names, sex == gender) %>%
+  ggplot() +
+  geom_line(aes(x = year, y = prop, color = name)) +
+    labs(x = "Year", y = "Proportion of Babies with This Name")
+}
+@
+
+
+\noindent As we can see, NameTrend takes names and gender as arguments and returns a plot showing the trend of those names over time. For example,
+
+<<fig = TRUE>>=
+NameTrend(c("Nicole", "Rachelle"), "F")
+@
+
+
+This has returned the graph for baby names Nicole (my sister) and Rachelle (me).
+
+\end{document}

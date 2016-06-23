@@ -1,0 +1,91 @@
+---
+title: "Working with Census Data"
+author: "Rachelle"
+date: "22 June 2016"
+output: 
+  html_document:
+    fig_height: 3
+    fig_width: 5
+  pdf_document:
+    fig_height: 3
+    fig_width: 5
+  word_document:
+    fig_height: 3
+    fig_width: 5
+---
+
+```{r, setup, include=FALSE}
+require(mosaic)   # Load additional packages here 
+
+# Some customization.  You can alter or delete as desired (if you know what you are doing).
+trellis.par.set(theme=theme.mosaic()) # change default color scheme for lattice
+knitr::opts_chunk$set(
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+```
+
+
+```{r}
+require(tidyr)
+require(dplyr)
+require(data.table)
+```
+
+
+
+
+```{r}
+options(stringsAsFactors = FALSE)
+DS1 <-
+  read.csv(file = "ACS_14_5YR_B01001_with_ann.csv",  nrows = 2, header = FALSE)
+#head(DS1)
+dim(DS1)
+#glimpse(DS1)
+DS2 <-
+  read.csv(file = "ACS_14_5YR_B01001_with_ann.csv",  skip = 2, header = FALSE)
+#head(DS2)
+dim(DS2)
+#names(DS2)
+names(DS2) <-
+  DS1[1,]
+#names(DS2)
+```
+
+
+```{r}
+DSnames <-
+  transpose(DS1)
+glimpse(DSnames)
+```
+
+```{r}
+DSnames <-
+  unite(DSnames, V3, V1:V2, sep = ": ")
+glimpse(DSnames)
+dim(DSnames)
+```
+
+```{r}
+DScolheaders <-
+  transpose(DSnames)
+#glimpse(DScolheaders)
+```
+
+```{r}
+names(DS2) <-
+  DScolheaders[1,]
+#names(DS2)
+```
+
+```{r}
+DScounts <-
+  select(DS2, -contains("HD02"))
+#glimpse(DScounts)
+```
+
+```{r}
+CountSums <-
+  DScounts %>%
+  transmute("M1--17" = rowSums(.[1:5]))
+```
+

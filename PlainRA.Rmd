@@ -1,0 +1,38 @@
+---
+title: "Hoopla"
+author: "Rachelle"
+date: ""
+output: 
+  html_document:
+    fig_height: 3
+    fig_width: 5
+  pdf_document:
+    fig_height: 3
+    fig_width: 5
+  word_document:
+    fig_height: 3
+    fig_width: 5
+---
+
+```{r, setup, include=FALSE}
+require(mosaic)   # Load additional packages here 
+
+# Some customization.  You can alter or delete as desired (if you know what you are doing).
+trellis.par.set(theme=theme.mosaic()) # change default color scheme for lattice
+knitr::opts_chunk$set(
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+```
+
+
+```{r}
+xyplot( births ~ date, data = Births78, groups = wday, type = 'l', auto.key = list(columns = 4, lines = T, points = F), par.settings = list(superpose.line = list( lty= 1)))
+```
+
+There seems to be a dip in births in 1978 on major holidays, perhaps related to scheduled births.
+
+```{r}
+xyplot(i1 ~ age, data = HELPrct)
+```
+
+These data from the HELPrct data map average daily numbers of drinks by age.

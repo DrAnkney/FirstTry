@@ -1,0 +1,126 @@
+---
+title: "Untitled"
+author: ""
+date: ""
+output: 
+  html_document:
+    fig_height: 3
+    fig_width: 5
+  pdf_document:
+    fig_height: 3
+    fig_width: 5
+  word_document:
+    fig_height: 3
+    fig_width: 5
+---
+
+```{r, setup, include=FALSE}
+require(mosaic)   # Load additional packages here 
+
+# Some customization.  You can alter or delete as desired (if you know what you are doing).
+trellis.par.set(theme=theme.mosaic()) # change default color scheme for lattice
+knitr::opts_chunk$set(
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+```
+
+
+```{r}
+names(HELPrct)
+inspect(HELPrct)
+```
+
+```{r}
+HELPrct %>%
+  ggplot(aes(x = homeless, y = sexrisk, colour = homeless)) +
+  geom_boxplot() +
+  geom_point( position = position_jitter(width = 0.7, height = 0) ) +
+  facet_grid(sex ~ substance) +
+  coord_flip() + 
+  labs(x = "Housing Status", y = "Sex Risk")
+```
+
+```{r}
+HELPrct %>%
+  ggplot(aes(x = homeless, y = sexrisk, colour = sex)) +
+  geom_violin() +
+  geom_point( position = position_jitterdodge(jitter.width = 0.8, jitter.height = 0, dodge.width = .9)) +
+  facet_grid( ~ substance) +
+  coord_flip() + 
+  labs(x = "Housing Status", y = "Sex Risk")
+```
+
+```{r}
+HELPrct %>%
+  ggplot(aes(x=age, y = e2b, colour = sex)) +
+  geom_point(na.rm = TRUE) +
+  scale_color_brewer(type = "qual", palette = 2)
+```
+
+```{r}
+HELPrct %>%
+  ggplot(aes(x=age, y = e2b, colour = sex)) +
+  geom_point(na.rm = TRUE) +
+  scale_color_manual(values = c("salmon1", "#9925EE"))
+```
+
+```{r}
+HELPrct %>%
+  ggplot(aes(x=age, y = e2b, colour = sex, shape = homeless, alpha = homeless)) +
+  geom_point(na.rm = TRUE) +
+  scale_color_manual(values = c("salmon1", "#9925EE"))
+```
+
+```{r}
+HELPrct %>%
+  ggplot(aes(x=age, y = e2b, colour = sex, shape = homeless, size = homeless)) +
+  geom_point(na.rm = TRUE) +
+  scale_color_manual(values = c("salmon1", "#9925EE"))
+```
+
+```{r}
+HELPrct %>%
+  ggplot(aes(x=age, y = e2b, colour = sex, shape = homeless, size = homeless)) +
+  geom_point(na.rm = TRUE, aes(alpha = substance)) +
+  geom_text(data = HELPrct %>% filter(e2b > 20), aes(label = id), size = 5, color = "orange", hjust = -0.1, vjust = 1) +
+  scale_color_manual(values = c("salmon1", "#9925EE")) +
+  scale_alpha_manual( values = c(.1, 0.1, 0.9))
+```
+
+```{r}
+HELPrct %>%
+  ggplot(aes(x=age, y = e2b, colour = sex, shape = homeless, size = homeless)) +
+  geom_point(na.rm = TRUE, aes(alpha = substance)) +
+  geom_text(data = HELPrct %>% filter(e2b > 20), aes(label = id), size = 5, color = "orange", hjust = -0.1, vjust = 1) +
+  scale_color_manual(values = c("salmon1", "#9925EE")) +
+  scale_alpha_manual( values = c(.1, 0.1, 0.9)) +
+  theme_minimal()
+```
+
+
+```{r}
+require(NHANES)
+NHANES %>%
+  ggplot(aes(x = Pulse)) +
+  stat_density(geom = "area", fill = "thistle", colour = "black", alpha = .4, na.rm = TRUE) +
+  geom_vline(xintercept = 85) +
+  theme_minimal()
+```
+
+```{r}
+NHANES %>%
+  ggplot(aes(x = Pulse)) +
+  stat_density(geom = "area", fill = "thistle", colour = "black", alpha = .4, na.rm = TRUE) +
+  geom_rect(aes(ymin = 0, ymax = .02, xmin = 85, xmax = 140), alpha = 0.01, fill = "pink") +
+  theme_minimal()
+```
+
+```{r}
+  dens <- density(NHANES$Pulse[!is.na(NHANES$Pulse)])
+densdf <- data.frame(dens[1:2])
+ggplot(data = densdf, aes(x = x, y = y)) +
+  geom_area(fill = "thistle", colour = "navy", alpha = 0.5) +
+  geom_area(data = densdf %>% filter(x > 85), fill = "salmon1")  +
+  theme_minimal()
+```
+

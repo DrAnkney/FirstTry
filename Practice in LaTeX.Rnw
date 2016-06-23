@@ -1,0 +1,44 @@
+\PassOptionsToPackage{svgnames}{xcolor}
+\documentclass[12pt]{book}
+\usepackage{amssymb,amsmath,latexsym,amsthm, hyperref, amsfonts, array, multicol, pgfplots, pgf, svgcolor}
+\usepackage{tikz, enumitem}
+\usepackage{listings}
+\usepackage{changepage}
+\usepackage{svgcolor}
+\usepackage{colortbl, multirow, rotating}
+
+\pagestyle{empty}
+
+\pgfplotsset{compat=1.8}
+\usepgfplotslibrary{statistics}
+\theoremstyle{definition}
+\newtheorem*{thm}{Theorem}
+\newcommand{\longpage}{\enlargethispage*{1in}}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+\Large{Writing Functions in R}
+
+Instead of copying and pasting commands over and over, the command ``function" will allow us to define functions that take arguments and return outputs such as graphs.
+
+For example, instead of creating individual graphs for baby name trends over the years, we can define the function NameTrend to do this work for us. The format within an R chunk is 
+
+functionName <- function( arg1 = default1, arg2 = default2, ... ) {Do stuff to the arguments here; the result of last line is returned, or we can use an explicit return() command.}
+
+<<>>=
+NameTrend <- function(names, gender) {
+  babynames %>% 
+  filter(name %in% names, sex == gender) %>%
+  ggplot() +
+  geom_line(aes(x = year, y = prop, color = name))
+}
+@
+
+So NameTrend takes names and gender as arguments and returns a plot showing the trend of those names over time. For example,
+
+<<fig = TRUE, echo = FALSE>>=
+NameTrend(c("Nicole", "Rachelle"), "F")
+@
+
+\end{document}

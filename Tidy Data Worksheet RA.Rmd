@@ -1,0 +1,139 @@
+---
+title: "Data Wrangling and Cleaning Practice"
+author: "Rachelle"
+date: "22 June 2016"
+output: 
+  html_document:
+    fig_height: 3
+    fig_width: 5
+  pdf_document:
+    fig_height: 3
+    fig_width: 5
+  word_document:
+    fig_height: 3
+    fig_width: 5
+---
+
+```{r, setup, include=FALSE}
+require(mosaic)   # Load additional packages here 
+
+# Some customization.  You can alter or delete as desired (if you know what you are doing).
+trellis.par.set(theme=theme.mosaic()) # change default color scheme for lattice
+knitr::opts_chunk$set(
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+```
+
+
+```{r}
+require(mosaic)
+require(dplyr)
+require(tidyr)
+require(DSR)
+data(who)
+head(who)
+```
+
+```{r}
+whoTidy <-
+  who %>%
+  gather("code","value", 5:60)
+whoTidy %>% sample_n(10)
+```
+
+```{r}
+whoTidy <-
+  whoTidy %>%
+  separate(code, c("new", "var", "sexage"))
+whoTidy %>%
+  sample_n(10)
+```
+
+```{r}
+require(nycflights13)
+names(flights)
+```
+
+```{r}
+names(airports)
+```
+
+```{r}
+names(airlines)
+```
+
+```{r}
+names(weather)
+names(planes)
+```
+
+```{r}
+flights %>%
+  select(carrier, flight, tailnum, origin, dest)
+```
+
+```{r}
+airports %>%
+  select(faa, name, lat, lon) %>%
+  head()
+```
+
+```{r}
+flights %>%
+  inner_join(airports, by = c("dest" = "faa")) %>%
+  select(carrier, flight, tailnum, origin, dest, name, lat, lon) %>%
+  head()
+```
+
+inner_join keeps all the rows from x that have a matching row in y (it's the intersection).
+left_join returns all rows from x and appends all columns from x and y.
+right_join returns all rows from y and appends all columns from x and y.
+full_join gives all the rows and columns from both x and y (it's the union).
+anti_join returns all the rows from x where there are not matching values from y.
+
+```{r}
+require(lubridate)
+rightnow <- now()
+day(rightnow)
+```
+
+```{r}
+yday(rightnow)
+```
+
+```{r}
+wday(rightnow, label=TRUE)
+```
+
+```{r}
+wday(rightnow, label=FALSE)
+```
+
+```{r}
+jan31 <- ymd("2013-01-31")
+jan31 + months(0:11)
+```
+
+```{r}
+floor_date(jan31, "month") + months(0:11) + days(31)
+```
+
+```{r}
+jan31 %m+% + months(0:11)
+```
+
+```{r}
+extract_numeric("$1,200.34")
+```
+
+```{r}
+extract_numeric("-245%")
+```
+
+```{r}
+install.packages("swirl")
+require(swirl)
+install_from_swirl(Getting_and_Cleaning_Data)
+swirl()
+```
+

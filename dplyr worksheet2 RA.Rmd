@@ -1,0 +1,230 @@
+---
+title: "dplyr practice"
+author: "Rachelle"
+date: "21 JUN 2016"
+output: 
+  html_document:
+    fig_height: 3
+    fig_width: 5
+  pdf_document:
+    fig_height: 3
+    fig_width: 5
+  word_document:
+    fig_height: 3
+    fig_width: 5
+---
+
+```{r, setup, include=FALSE}
+require(mosaic)   # Load additional packages here 
+
+# Some customization.  You can alter or delete as desired (if you know what you are doing).
+trellis.par.set(theme=theme.mosaic()) # change default color scheme for lattice
+knitr::opts_chunk$set(
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+```
+
+```{r}
+Babynames %>% glimpse
+```
+
+```{r}
+Babynames %>% 
+  names()
+```
+
+```{r}
+Babynames %>% head()
+```
+
+```{r}
+NHANESsleep <-
+  NHANES %>%
+  select(gender, age, weight, race1, race3, education, sleeptrouble, sleephrsnight, tvhrsday, tvhrsdaychild, physactive)
+
+names(NHANESsleep)
+```
+
+```{r}
+dim(NHANESsleep)
+```
+
+```{r}
+NHANESsleep <-
+  NHANESsleep %>%
+  filter(age %in% c(18:22))
+histogram(~age, data=NHANESsleep)
+```
+
+```{r}
+NHANESsleep %>%
+  mutate(weightlb = weight * 2.2) %>%
+  head(3)
+```
+
+```{r}
+NHANESsleep %>%
+  transmute(weightlb = weight * 2.2) %>%
+  head(3)
+```
+
+```{r}
+NHANES %>%
+  summarise(n())
+```
+
+```{r}
+NHANESsleep <-
+  NHANES %>%
+  select(gender, age, weight, race1, race3, education, sleeptrouble, sleephrsnight, tvhrsday, tvhrsdaychild, physactive) %>%
+  filter(age %in% c(18:22)) %>%
+  mutate(weightlb = weight * 2.2)
+```
+
+```{r}
+glimpse(NHANESsleep)
+```
+
+```{r}
+NHANES %>%
+  mutate(weightlb = weight*2.2) %>%
+  summarise(mean(weightlb, na.rm = TRUE))
+```
+
+```{r}
+NHANES %>%
+  mutate(weightlb = weight*2.2) %>%
+  group_by(education) %>%
+  summarise(mean(weightlb, na.rm = TRUE))
+```
+
+```{r}
+NHANES %>%
+  mutate(weightlb = weight*2.2) %>%
+  group_by(education, gender) %>%
+  summarise(mean(weightlb, na.rm = TRUE))
+```
+
+```{r}
+NHANES %>%
+  mutate(weightlb = weight*2.2) %>%
+  group_by(education) %>%
+  group_by(gender) %>%
+  summarise(mean(weightlb, na.rm = TRUE))
+```
+
+```{r}
+NHANES %>%
+  mutate(weightlb = weight*2.2) %>%
+  group_by(gender) %>%
+  group_by(education) %>%
+  summarise(mean(weightlb, na.rm = TRUE))
+```
+
+
+```{r}
+NHANES %>%
+  mutate(weightlb = weight*2.2) %>%
+  group_by(gender, education) %>%
+  summarise(mean(weightlb, na.rm = TRUE))
+```
+
+```{r}
+NHANES %>%
+  mutate(weightlb = weight*2.2) %>%
+  group_by(education) %>%
+  summarise(avewt = mean(weightlb, na.rm = TRUE)) %>%
+  arrange(avewt)
+```
+
+```{r}
+SmallSubset <-
+  Babynames %>%
+  filter(year > 2000) %>%
+  sample_n(size = 200)
+
+names(SmallSubset)
+```
+
+
+```{r}
+SmallSubset %>%
+  summarise(total = sum(n))
+```
+
+```{r}
+SmallSubset %>%
+  group_by(year) %>%
+  summarise(total = sum(n))
+```
+
+```{r}
+SmallSubset %>%
+  group_by(year) %>%
+  summarise(name_count = n_distinct(name))
+```
+
+```{r}
+temp <-
+SmallSubset %>%
+  group_by(year, sex) %>%
+  summarise(name_count = n_distinct(name))
+
+  View(temp)
+```
+
+```{r}
+Result <-
+  Babynames %>%
+  filter(name %in% c("Jane", "Mary")) %>%
+  group_by(year, name) %>%
+  summarise(count = sum(n))
+head(Result)
+```
+
+```{r}
+ggplot(data = Result, aes(x = year, y = count, color = name)) +
+  geom_point() +
+  ylab("Yearly Births")
+```
+
+```{r}
+ggplot(data = Result, aes(x = year, y = count, color = name)) +
+  geom_line(size = 2) +
+  labs(x = "Year", y = "Yearly Births")
+```
+
+```{r}
+Result2 <-
+  Babynames %>%
+  filter(sex == "F") %>%
+  group_by(year) %>%
+  mutate(total = sum(n)) %>%
+  filter(name %in% c("Mary", "Jane")) %>%
+  mutate(proportion = n / total)
+```
+
+```{r}
+  ggplot(data = Result2, aes(x = year, y = proportion, color = name)) +
+  geom_line(size = 2) +
+  geom_vline(xintercept = 1930) +
+  labs(x = "Year", y = "Proportion of Yearly Births")
+```
+
+```{r}
+MyName <-
+  Babynames %>%
+  filter(name == "Rachelle") %>%
+  group_by(year) %>%
+  summarise(count = sum(n))
+head(MyName)
+```
+
+```{r}
+ggplot(data = MyName, aes(x = year, y = count)) +
+  geom_line(size = 2, color = "thistle") +
+  geom_vline(xintercept = 1971, color = "salmon1") +
+  labs(x = "Year", y = "Number of Babies Named Rachelle", title = "Rachelles")
+```
+
+

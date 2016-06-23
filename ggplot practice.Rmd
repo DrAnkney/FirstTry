@@ -1,0 +1,181 @@
+---
+title: "Playing with ggplot"
+author: "Rachelle"
+date: "21 June 2016"
+output: 
+  html_document:
+    fig_height: 3
+    fig_width: 5
+  pdf_document:
+    fig_height: 3
+    fig_width: 5
+  word_document:
+    fig_height: 3
+    fig_width: 5
+---
+
+```{r, setup, include=FALSE}
+require(mosaic)   # Load additional packages here 
+
+# Some customization.  You can alter or delete as desired (if you know what you are doing).
+trellis.par.set(theme=theme.mosaic()) # change default color scheme for lattice
+knitr::opts_chunk$set(
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+```
+
+```{r}
+Births78 %>%
+ggplot(aes(x = date, y = births, color = wday)) + geom_point() + geom_line()
+```
+
+```{r}
+Births78 %>%
+ggplot(aes(x = date, y = births)) + geom_point(color = "navy")
+```
+
+ggplot doesn't take color setting arguments, it chooses colors as a variable, not as something to be set. So if try to set the color inside ggplot, it'll just assign a random color.
+
+```{r}
+Births78 %>%
+ggplot(aes(x = date, y = births, color = "navy")) + geom_point()
+```
+
+Whichever layer you list first is drawn first.
+
+```{r}
+Births78 %>%
+ggplot(aes(x = date, y = births)) + 
+  geom_line(aes(color = wday)) + 
+  geom_point(color = "navy")
+```
+
+You can fill things in, but be careful not to obscure data. Also, filling in will take you down to zero to show the whole area under the curve. In a graph like the following one, that is useful to see, but it won't always be useful. Perhaps transparency would be helpful here, or just a change in the y-axis instead of a fill.
+
+```{r}
+Births78 %>%
+ggplot(aes(x = date, y = births, fill = wday)) + geom_area()
+```
+
+The geom_bar function does the work of counting data into the bins you've chosen as your x variable.
+
+```{r}
+HELPrct %>%
+  ggplot(aes(x = substance)) + geom_bar()
+```
+
+There is a design flaw that the geom_bar draws the picture but doesn't provide the actual account (for labeling or other purposes).
+
+```{r}
+HELPrct %>%
+  ggplot(aes(x = age)) + geom_histogram(binwidth = 2)
+```
+
+You can change the number of bins instead of the binwidth.
+
+```{r}
+HELPrct %>%
+  ggplot(aes(x = age)) + geom_histogram(bins = 20)
+```
+
+Here are some other glyphs.
+
+```{r}
+HELPrct %>%
+  ggplot(aes(x = age)) + 
+   geom_ash(binwidth = 2, colour = "navy", size = 1.2) +
+   geom_density(colour = "forestgreen", size = 1.2) + 
+   geom_freqpoly(binwidth = 2, aes(y = ..density..))
+```
+
+```{r}
+colors()
+```
+
+```{r}
+HELPrct %>%
+  ggplot(aes(x = age)) + geom_line(stat = "density")
+```
+
+```{r}
+HELPrct %>%
+  ggplot(aes(x = i1)) + geom_histogram(binwidth = 5)
+```
+
+```{r}
+HELPrct %>%
+  ggplot(aes(x = i1)) +
+   geom_ash(binwidth = 5, colour = "navy", size = 1.2) +
+   geom_density(colour = "forestgreen", size = 1.2) + 
+   geom_freqpoly(binwidth = 5, aes(y = ..density..))
+```
+
+```{r}
+HELPrct %>%
+  ggplot(aes(x = i1)) +
+   geom_ash(binwidth = 5, colour = "thistle", size = 1.2) +
+   geom_density(colour = "salmon1", size = 1.2)
+```
+
+```{r}
+HELPrct %>%
+  ggplot(aes(x = i1)) +
+   geom_ash(binwidth = 5, colour = "salmon1", size = 1.2) +
+   geom_density(colour = "salmon4", size = 1.2)
+```
+
+```{r}
+HELPrct %>%
+  ggplot(aes(x = i1, color = substance, linetype = sex)) +
+   geom_line(stat = "density")
+```
+
+```{r}
+HELPrct %>%
+  ggplot(aes(x = i1, color = substance)) +
+   geom_line(stat = "density") + facet_grid( . ~ sex)
+```
+
+```{r}
+HELPrct %>%
+  ggplot(aes(x = i1, color = substance)) +
+   geom_line(stat = "density") + facet_grid(sex ~ . )
+```
+
+```{r}
+HELPrct %>%
+  ggplot(aes(x = substance, y = age, color = sex)) +
+   geom_boxplot()
+```
+
+```{r}
+HELPrct %>%
+  ggplot(aes(x = substance, y = age, color = sex)) +
+   geom_boxplot() +
+   coord_flip()
+```
+
+```{r}
+HELPrct %>%
+  ggplot(aes(x = substance, y = age, color = sex)) +
+   geom_boxplot(position = position_dodge(width = 1)) +
+   coord_flip()
+```
+
+```{r}
+NHANES %>%
+  ggplot(aes(x = Height, y = Weight)) +
+  geom_point(alpha = 0.01) +
+  facet_grid(Gender ~ PregnantNow)
+```
+
+```{r}
+NHANES %>%
+  ggplot(aes(x = Height, y = Weight)) +
+   geom_hex() + facet_grid(Gender ~ PregnantNow) +
+   labs(x = "waist (m)", y = "weight (kg)",
+   title = "weight vs height")
+```
+
+Need to install another package. Is it HexView?
+
