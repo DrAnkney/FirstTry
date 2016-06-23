@@ -1,0 +1,54 @@
+---
+title: "Leaflet Maps"
+author: "Rachelle"
+date: "23 June 2016"
+output: 
+  html_document:
+    fig_height: 3
+    fig_width: 5
+  pdf_document:
+    fig_height: 3
+    fig_width: 5
+  word_document:
+    fig_height: 3
+    fig_width: 5
+---
+
+```{r, setup, include=FALSE}
+require(mosaic)   # Load additional packages here 
+
+# Some customization.  You can alter or delete as desired (if you know what you are doing).
+trellis.par.set(theme=theme.mosaic()) # change default color scheme for lattice
+knitr::opts_chunk$set(
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+```
+
+
+
+```{r}
+library(leaflet)
+
+mymap <- leaflet() %>% 
+  addProviderTiles("Stamen.Toner") %>%
+  addCircleMarkers(lat = 42.0117463, lng = -87.6730097, color = "red")
+mymap
+```
+
+```{r}
+library(leaflet)
+content <- paste(sep = "<br/>",
+  "1728 W Estes Ave",
+  "Chicago, IL 60626"
+)
+
+mymap <- leaflet() %>% 
+  addTiles() %>%
+  addPopups(lat = 42.0117463, lng = -87.6730097, content)
+mymap
+```
+
+```{r}
+
+```
+
