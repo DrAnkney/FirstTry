@@ -8,6 +8,7 @@
 \begin{document}
 \SweaveOpts{concordance=TRUE}
 
+
 <<echo = FALSE>>=
 require(mosaic)
 require(babynames)
