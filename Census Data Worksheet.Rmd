@@ -74,7 +74,7 @@ DScolheaders <-
 ```{r}
 names(DS2) <-
   DScolheaders[1,]
-#names(DS2)
+names(DS2)
 ```
 
 ```{r}
@@ -86,6 +86,7 @@ DScounts <-
 ```{r}
 CountSums <-
   DScounts %>%
-  transmute("M1--17" = rowSums(.[1:5]))
+  transmute(young =  %>%
+head(10)
 ```
 
